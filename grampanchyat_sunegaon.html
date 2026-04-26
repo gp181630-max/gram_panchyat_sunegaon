@@ -1,0 +1,563 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --saffron: #FF6B35;
+    --green-india: #2E7D32;
+    --navy: #1A237E;
+    --gold: #F9A825;
+    --text: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --bg: var(--color-background-primary);
+    --surface: var(--color-background-secondary);
+    --border: var(--color-border-tertiary);
+    --r: var(--border-radius-lg);
+  }
+  body { font-family: var(--font-sans); color: var(--text); }
+
+  /* ─── HEADER ─── */
+  .gp-header {
+    background: linear-gradient(135deg, #1A237E 0%, #283593 60%, #1565C0 100%);
+    color: white;
+    padding: 0;
+  }
+  .tricolor-strip { height: 5px; background: linear-gradient(to right, #FF6B35 33%, white 33%, white 66%, #2E7D32 66%); }
+  .header-inner { display: flex; align-items: center; gap: 16px; padding: 16px 20px 12px; }
+  .emblem { width: 56px; height: 56px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .header-text h1 { font-size: 18px; font-weight: 500; letter-spacing: 0.3px; }
+  .header-text .sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  .header-text .marathi { font-size: 15px; font-weight: 500; opacity: 0.9; }
+
+  /* ─── NAV ─── */
+  .nav { background: #0D1B6E; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .nav-inner { display: inline-flex; gap: 0; min-width: 100%; }
+  .nav-btn { padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.75); border: none; background: none; cursor: pointer; transition: all 0.15s; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .nav-btn:hover { color: white; background: rgba(255,255,255,0.08); }
+  .nav-btn.active { color: #FFD54F; border-bottom-color: #FFD54F; background: rgba(255,255,255,0.07); }
+
+  /* ─── MAIN ─── */
+  .main { padding: 16px; }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── HERO (HOME) ─── */
+  .hero-banner {
+    background: linear-gradient(135deg, #1A237E, #1565C0);
+    color: white; border-radius: var(--r); padding: 24px 20px; margin-bottom: 16px; text-align: center;
+  }
+  .hero-banner h2 { font-size: 22px; font-weight: 500; }
+  .hero-banner .marathi-big { font-size: 18px; opacity: 0.85; margin: 4px 0 8px; }
+  .hero-banner p { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+  .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--surface); border-radius: var(--border-radius-md); padding: 12px 8px; text-align: center; border: 0.5px solid var(--border); }
+  .stat-card .num { font-size: 22px; font-weight: 500; color: #1A237E; }
+  .stat-card .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── QUICK LINKS ─── */
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .quick-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--r); padding: 14px 10px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+  .quick-card:hover { border-color: #1A237E; }
+  .quick-card .icon { font-size: 22px; display: block; margin-bottom: 6px; }
+  .quick-card .ql-title { font-size: 12px; font-weight: 500; color: var(--text); }
+  .quick-card .ql-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── CARDS & LISTS ─── */
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--r); padding: 14px 16px; margin-bottom: 12px; }
+  .card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .section-header { margin-bottom: 14px; }
+  .section-header h2 { font-size: 18px; font-weight: 500; }
+  .section-header .marathi { font-size: 14px; color: var(--muted); }
+
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-green { background: #E8F5E9; color: #2E7D32; }
+  .badge-amber { background: #FFF8E1; color: #F57F17; }
+  .badge-blue { background: #E3F2FD; color: #1565C0; }
+  .badge-red { background: #FFEBEE; color: #C62828; }
+
+  .info-row { display: flex; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 12px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { color: var(--muted); min-width: 140px; flex-shrink: 0; }
+  .info-val { color: var(--text); font-weight: 500; }
+
+  .member-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .member-card { background: var(--surface); border-radius: var(--border-radius-md); padding: 12px; border: 0.5px solid var(--border); }
+  .member-avatar { width: 36px; height: 36px; border-radius: 50%; background: #1A237E; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .member-name { font-size: 13px; font-weight: 500; }
+  .member-role { font-size: 11px; color: var(--muted); }
+  .member-phone { font-size: 11px; color: #1565C0; margin-top: 4px; }
+
+  .scheme-item { border: 0.5px solid var(--border); border-radius: var(--border-radius-md); padding: 12px; margin-bottom: 8px; }
+  .scheme-item h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .scheme-item p { font-size: 12px; color: var(--muted); }
+
+  .project-bar { height: 6px; border-radius: 3px; background: var(--surface); margin: 8px 0; overflow: hidden; }
+  .project-fill { height: 100%; border-radius: 3px; background: #1565C0; }
+
+  .finance-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .finance-row:last-child { border-bottom: none; }
+  .finance-row .amt { font-weight: 500; }
+  .finance-row .amt.income { color: #2E7D32; }
+  .finance-row .amt.expense { color: #C62828; }
+
+  .rti-point { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .rti-point:last-child { border-bottom: none; }
+  .rti-num { font-size: 11px; font-weight: 500; color: white; background: #1A237E; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .rti-text h4 { font-weight: 500; margin-bottom: 2px; }
+  .rti-text p { color: var(--muted); font-size: 12px; }
+
+  .notice-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .notice-item:last-child { border-bottom: none; }
+  .notice-date { font-size: 11px; color: var(--muted); min-width: 70px; padding-top: 2px; }
+  .notice-body h4 { font-size: 13px; font-weight: 500; }
+  .notice-body p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .gallery-thumb { border-radius: var(--border-radius-md); overflow: hidden; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 28px; border: 0.5px solid var(--border); }
+  .gallery-thumb.blue-bg { background: #E3F2FD; }
+  .gallery-thumb.green-bg { background: #E8F5E9; }
+  .gallery-thumb.amber-bg { background: #FFF8E1; }
+
+  .contact-form input, .contact-form textarea, .contact-form select {
+    width: 100%; padding: 9px 12px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--bg); color: var(--text); margin-bottom: 10px; outline: none;
+  }
+  .contact-form textarea { min-height: 80px; resize: vertical; }
+  .submit-btn { background: #1A237E; color: white; border: none; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; width: 100%; }
+  .submit-btn:hover { background: #283593; }
+
+  .form-download { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .form-download:last-child { border-bottom: none; }
+  .dl-btn { font-size: 12px; color: #1565C0; background: #E3F2FD; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; }
+
+  .alert-banner { background: #FFF8E1; border: 0.5px solid #F9A825; border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: #E65100; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+</style>
+
+<div class="gp-header">
+  <div class="tricolor-strip"></div>
+  <div class="header-inner">
+    <div class="emblem">🏛️</div>
+    <div class="header-text">
+      <div class="marathi">सुनेगाव ग्राम पंचायत</div>
+      <h1>Sunegaon Gram Panchayat</h1>
+      <div class="sub">Nanded District · Maharashtra · India</div>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+    <button class="nav-btn" onclick="showSection('about')">🏛️ About</button>
+    <button class="nav-btn" onclick="showSection('services')">📋 Services</button>
+    <button class="nav-btn" onclick="showSection('schemes')">📜 Schemes</button>
+    <button class="nav-btn" onclick="showSection('works')">🏗️ Works</button>
+    <button class="nav-btn" onclick="showSection('finance')">💰 Finance</button>
+    <button class="nav-btn" onclick="showSection('rti')">⚖️ RTI</button>
+    <button class="nav-btn" onclick="showSection('notices')">📢 Notices</button>
+    <button class="nav-btn" onclick="showSection('gallery')">📸 Gallery</button>
+    <button class="nav-btn" onclick="showSection('contact')">📞 Contact</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <!-- <div class="alert-banner">📢 Gram Sabha scheduled: 15 May 2026 · 10:00 AM · Village Hall</div> -->
+    <div class="hero-banner">
+      <h2>Welcome to Sunegaon</h2>
+      <div class="marathi-big">सुनेगाव ग्रामपंचायतमध्ये आपले स्वागत आहे</div>
+      <p>Serving the citizens of Sunegaon with transparency, accountability, and dedication to rural development.</p>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-card"><div class="num">2,356</div><div class="lbl">Population</div></div>
+      <div class="stat-card"><div class="num">470</div><div class="lbl">Households</div></div>
+      <div class="stat-card"><div class="num">9</div><div class="lbl">Ward Members</div></div>
+      <div class="stat-card"><div class="num">₹8.61L</div><div class="lbl">Annual Budget</div></div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showSection('services')"><span class="icon">📄</span><div class="ql-title">Certificates</div><div class="ql-sub">Birth · Death · Income</div></div>
+      <div class="quick-card" onclick="showSection('schemes')"><span class="icon">🏠</span><div class="ql-title">PMAY Scheme</div><div class="ql-sub">Housing for all</div></div>
+      <div class="quick-card" onclick="showSection('works')"><span class="icon">🚧</span><div class="ql-title">Ongoing Works</div><div class="ql-sub">Road · Water · Sanitation</div></div>
+      <div class="quick-card" onclick="showSection('rti')"><span class="icon">⚖️</span><div class="ql-title">RTI Information</div><div class="ql-sub">Sec 4(1)(b) disclosures</div></div>
+      <div class="quick-card" onclick="showSection('finance')"><span class="icon">💰</span><div class="ql-title">Budget & Finance</div><div class="ql-sub">Annual accounts</div></div>
+      <div class="quick-card" onclick="showSection('notices')"><span class="icon">📢</span><div class="ql-title">Notices</div><div class="ql-sub">Gram Sabha · Tenders</div></div>
+    </div>
+    <div class="card">
+      <h3>Village at a Glance · गावाची ओळख</h3>
+      <div class="info-row"><span class="info-label">Taluka</span><span class="info-val">Loha</span></div>
+      <div class="info-row"><span class="info-label">District</span><span class="info-val">Nanded</span></div>
+      <div class="info-row"><span class="info-label">State</span><span class="info-val">Maharashtra</span></div>
+      <div class="info-row"><span class="info-label">PIN Code</span><span class="info-val">431708</span></div>
+      <div class="info-row"><span class="info-label">Area</span><span class="info-val">981.59 hectares</span></div>
+      <div class="info-row"><span class="info-label">Literacy Rate</span><span class="info-val">79.24%</span></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="about" class="section">
+    <div class="section-header"><h2>About Gram Panchayat</h2><div class="marathi">ग्रामपंचायत बद्दल</div></div>
+    <div class="card">
+      <h3>Sarpanch · सरपंच</h3>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-avatar">SR</div>
+          <div class="member-name">Smt. Daivashala Kishan Giri</div>
+          <div class="member-role">Sarpanch · सरपंच</div>
+          <div class="member-phone">📞 9322272619</div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar" style="background:#2E7D32;">RK</div>
+          <div class="member-name">Shri. Nagorao Bapurao Jadhav</div>
+          <div class="member-role">Deputy Sarpanch · उपसरपंच</div>
+          <div class="member-phone">📞 9420921364</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Gram Panchayat Officer · ग्रामपंचायत अधिकारी</h3>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-avatar" style="background:#2E7D32;">RK</div>
+          <div class="member-name">Shri. Mohan Rahulwad</div>
+          <div class="member-role">Gram Panchayat Officer · ग्रामपंचायत अधिकारी</div>
+          <div class="member-phone">📞 8605462368</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ward Members · सदस्य</h3>
+      <div class="member-grid">
+        <div class="member-card"><div class="member-avatar" style="background:#F57F17;font-size:11px;">WD1</div><div class="member-name">Shri. Bhagwan Adhav</div><div class="member-role">Ward 1</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#880E4F;font-size:11px;">WD2</div><div class="member-name">Shri. Anil Boinwad`</div><div class="member-role">Ward 2</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#004D40;font-size:11px;">WD3</div><div class="member-name">Shri. Ujwal Jadhav</div><div class="member-role">Ward 3</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#6A1B9A;font-size:11px;">WD4</div><div class="member-name">Smt. Sangita Kadam </div><div class="member-role">Ward 4</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#F57F17;font-size:11px;">WD5</div><div class="member-name">Smt. Indutai Jadhav</div><div class="member-role">Ward 5</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#880E4F;font-size:11px;">WD6</div><div class="member-name">Smt. Shivnanda Poshat</div><div class="member-role">Ward 6</div></div>
+        <div class="member-card"><div class="member-avatar" style="background:#004D40;font-size:11px;">WD7</div><div class="member-name">Smt. Kalubai Adhav</div><div class="member-role">Ward 7</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Office Details · कार्यालय माहिती</h3>
+      <div class="info-row"><span class="info-label">Address</span><span class="info-val">GP Office, Sunegaon, Loha, Nanded – 431708</span></div>
+      <div class="info-row"><span class="info-label">Office Hours</span><span class="info-val">Mon–Sat · 10:00 AM – 5:30 PM</span></div>
+      <div class="info-row"><span class="info-label">Gram Sevak</span><span class="info-val">Shri. Mohan Rahulwad · 8605462368</span></div>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-val">gp181630@gmail.com</span></div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div id="services" class="section">
+    <div class="section-header"><h2>Citizen Services</h2><div class="marathi">नागरिक सेवा</div></div>
+    <div class="card">
+      <h3>Certificate Services · प्रमाणपत्र सेवा</h3>
+      <div class="form-download"><span style="font-size:13px;">📋 Birth Certificate · जन्म दाखला</span><button class="dl-btn">Download Form</button></div>
+      <div class="form-download"><span style="font-size:13px;">📋 Death Certificate · मृत्यू दाखला</span><button class="dl-btn">Download Form</button></div>
+      <div class="form-download"><span style="font-size:13px;">📋 Marriage Registration · विवाह नोंदणी</span><button class="dl-btn">Download Form</button></div>
+      <div class="form-download"><span style="font-size:13px;">📋 Income Certificate · उत्पन्न दाखला</span><button class="dl-btn">Download Form</button></div>
+      <div class="form-download"><span style="font-size:13px;">📋 Domicile Certificate · अधिवास प्रमाणपत्र</span><button class="dl-btn">Download Form</button></div>
+      <div class="form-download"><span style="font-size:13px;">📋 Property Extract · मालमत्ता उतारा</span><button class="dl-btn">Download Form</button></div>
+    </div>
+    <div class="card">
+      <h3>Tax Payment · कर भरणा</h3>
+      <div class="info-row"><span class="info-label">Property Tax</span><span class="info-val">Pay at GP Office or online</span></div>
+      <div class="info-row"><span class="info-label">Water Tax</span><span class="info-val">Quarterly billing · ₹120/month</span></div>
+      <div class="info-row"><span class="info-label">Sanitation Cess</span><span class="info-val">₹40/month per household</span></div>
+    </div>
+    <div class="card">
+      <h3>Processing Time · कालमर्यादा</h3>
+      <p style="font-size:13px; line-height:1.8; color:var(--muted);">Birth / Death certificate: <strong style="color:var(--text)">3 working days</strong><br>Income / Domicile: <strong style="color:var(--text)">7 working days</strong><br>Property extract: <strong style="color:var(--text)">5 working days</strong><br>RTI information: <strong style="color:var(--text)">30 days (as per RTI Act)</strong></p>
+    </div>
+  </div>
+
+  <!-- SCHEMES -->
+  <div id="schemes" class="section">
+    <div class="section-header"><h2>Government Schemes</h2><div class="marathi">शासकीय योजना</div></div>
+    <div class="card">
+      <h3>Central Schemes · केंद्र सरकारी योजना</h3>
+      <div class="scheme-item">
+        <h4>MGNREGA <span class="badge badge-green">Active</span></h4>
+        <p>Mahatma Gandhi National Rural Employment Guarantee · 248 registered workers · 92 days average employment</p>
+      </div>
+      <div class="scheme-item">
+        <h4>PMAY – Gramin <span class="badge badge-green">Active</span></h4>
+        <p>Pradhan Mantri Awas Yojana · 42 beneficiaries approved · 28 houses completed</p>
+      </div>
+      <div class="scheme-item">
+        <h4>PM-KISAN <span class="badge badge-green">Active</span></h4>
+        <p>Direct income support to farmers · 312 farmers enrolled · ₹6,000/year per family</p>
+      </div>
+      <div class="scheme-item">
+        <h4>Jal Jeevan Mission <span class="badge badge-amber">Ongoing</span></h4>
+        <p>Har Ghar Jal – tap water connection to every household · 78% coverage achieved</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>State Schemes · राज्य शासकीय योजना</h3>
+      <div class="scheme-item">
+        <h4>Ramai Awas Yojana <span class="badge badge-green">Active</span></h4>
+        <p>Housing for SC/ST communities · 18 beneficiaries · Application at GP office</p>
+      </div>
+      <!-- <div class="scheme-item">
+        <h4>Shivbhojan Thali <span class="badge badge-green">Active</span></h4>
+        <p>Subsidised meals at ₹5 · Available at designated center</p>
+      </div> -->
+      <div class="scheme-item">
+        <h4>Majhi Ladki Bahin <span class="badge badge-blue">New</span></h4>
+        <p>Financial assistance to women · ₹1,500/month · Applications open until 30 June 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKS -->
+  <div id="works" class="section">
+    <div class="section-header"><h2>Works & Projects</h2><div class="marathi">कामे व प्रकल्प</div></div>
+    <!-- <div class="card">
+      <h3>Ongoing Works · चालू कामे</h3>
+      <div class="scheme-item">
+        <h4>Road Widening – Ward 2 <span class="badge badge-amber">65% complete</span></h4>
+        <div class="project-bar"><div class="project-fill" style="width:65%"></div></div>
+        <p>Budget: ₹12,40,000 · Contractor: Shri. Builders Pvt Ltd · Expected: Aug 2026</p>
+      </div>
+      <div class="scheme-item">
+        <h4>Water Tank Renovation <span class="badge badge-amber">40% complete</span></h4>
+        <div class="project-bar"><div class="project-fill" style="width:40%"></div></div>
+        <p>Budget: ₹8,20,000 · Funded by JJM · Expected: Oct 2026</p>
+      </div>
+      <div class="scheme-item">
+        <h4>Community Toilet Block – Ward 4 <span class="badge badge-amber">80% complete</span></h4>
+        <div class="project-bar"><div class="project-fill" style="width:80%"></div></div>
+        <p>Budget: ₹3,50,000 · SBM funded · Expected: Jun 2026</p>
+      </div>
+    </div> -->
+    <!-- <div class="card">
+      <h3>Completed Works · पूर्ण कामे</h3>
+      <div class="scheme-item">
+        <h4>Street Light Installation <span class="badge badge-green">Completed</span></h4>
+        <p>48 LED lights installed · Cost: ₹6,80,000 · Completed: Feb 2026</p>
+      </div>
+      <div class="scheme-item">
+        <h4>Village Square Renovation <span class="badge badge-green">Completed</span></h4>
+        <p>Paving + seating + greenery · Cost: ₹4,20,000 · Completed: Dec 2025</p>
+      </div>
+      <div class="scheme-item">
+        <h4>School Boundary Wall <span class="badge badge-green">Completed</span></h4>
+        <p>ZP Primary School · Cost: ₹2,10,000 · Completed: Nov 2025</p>
+      </div>
+    </div> -->
+  </div>
+
+  <!-- FINANCE -->
+  <div id="finance" class="section">
+    <div class="section-header"><h2>Finance & Budget</h2><div class="marathi">आर्थिक पारदर्शकता</div></div>
+    <!-- <div class="stats-strip" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card"><div class="num" style="color:#2E7D32;">₹48L</div><div class="lbl">Annual Budget 2025-26</div></div>
+      <div class="stat-card"><div class="num" style="color:#1565C0;">₹36L</div><div class="lbl">Total Income</div></div>
+      <div class="stat-card"><div class="num" style="color:#C62828;">₹31L</div><div class="lbl">Expenditure</div></div>
+    </div> -->
+    <div class="card">
+      <!-- <h3>Income Sources · उत्पन्नाचे स्रोत</h3>
+      <div class="finance-row"><span>Property Tax · मालमत्ता कर</span><span class="amt income">₹8,40,000</span></div>
+      <div class="finance-row"><span>Water Tax · पाणीपट्टी</span><span class="amt income">₹2,20,000</span></div>
+      <div class="finance-row"><span>14th Finance Commission</span><span class="amt income">₹12,00,000</span></div>
+      <div class="finance-row"><span>State Grants · राज्य अनुदान</span><span class="amt income">₹9,80,000</span></div>
+      <div class="finance-row"><span>MGNREGA Funds</span><span class="amt income">₹3,60,000</span></div>
+    </div> -->
+     <h3>Income Sources · उत्पन्नाचे स्रोत</h3>
+      <div class="finance-row"><span>Property Tax · मालमत्ता कर</span></div>
+      <div class="finance-row"><span>Water Tax · पाणीपट्टी</span></div>
+      <div class="finance-row"><span>14th Finance Commission</span></div>
+      <div class="finance-row"><span>State Grants · राज्य अनुदान</span></div>
+      <div class="finance-row"><span>MGNREGA Funds</span></div>
+    </div>
+    <div class="card">
+      <h3>Expenditure · खर्च</h3>
+      <div class="finance-row"><span>Infrastructure Works</span></div>
+      <div class="finance-row"><span>Staff Salaries · वेतन</span></div>
+      <div class="finance-row"><span>Water Supply</span></div>
+      <div class="finance-row"><span>Sanitation · स्वच्छता</span></div>
+      <div class="finance-row"><span>Administration</span></div>
+    </div>
+    <!-- <div class="card">
+      <h3>Audit Status · लेखापरीक्षण</h3>
+      <div class="info-row"><span class="info-label">2023-24 Audit</span><span class="info-val"><span class="badge badge-green">Cleared</span></span></div>
+      <div class="info-row"><span class="info-label">2024-25 Audit</span><span class="info-val"><span class="badge badge-amber">In Progress</span></span></div>
+      <div class="info-row"><span class="info-label">Auditor</span><span class="info-val">Dist. Audit Office, Nanded</span></div>
+    </div> -->
+  </div>
+
+  <!-- RTI -->
+  <div id="rti" class="section">
+    <div class="section-header"><h2>RTI Disclosures</h2><div class="marathi">माहितीचा अधिकार – कलम 4(1)(ब)</div></div>
+    <div class="alert-banner">⚖️ Mandatory disclosures as per RTI Act 2005, Section 4(1)(b) — 17 points</div>
+    <div class="card">
+      <div class="rti-point"><div class="rti-num">1</div><div class="rti-text"><h4>Organizational Structure</h4><p>Sarpanch → Deputy Sarpanch → Ward Members → Gram Sevak → Village Staff</p></div></div>
+      <div class="rti-point"><div class="rti-num">2</div><div class="rti-text"><h4>Powers & Duties of Officers</h4><p>As per Maharashtra Gram Panchayat Act 1958 and delegated authority</p></div></div>
+      <div class="rti-point"><div class="rti-num">3</div><div class="rti-text"><h4>Decision-Making Process</h4><p>Gram Sabha resolutions → Committee approval → Sarpanch execution → Gram Sevak implementation</p></div></div>
+      <div class="rti-point"><div class="rti-num">4</div><div class="rti-text"><h4>Rules & Regulations</h4><p>Maharashtra GP Act 1958, Building Bye-laws, Sanitation Rules, State Finance Rules</p></div></div>
+      <div class="rti-point"><div class="rti-num">5</div><div class="rti-text"><h4>Directory of Employees</h4><p>Gram Sevak, Tax Collector, Pump Operator, Sweeper (4 staff total)</p></div></div>
+      <div class="rti-point"><div class="rti-num">6</div><div class="rti-text"><h4>Salary Details</h4><p>As per State Pay Matrix – 7th Pay Commission. Available for inspection at GP office.</p></div></div>
+      <div class="rti-point"><div class="rti-num">7</div><div class="rti-text"><h4>Budget Allocation</h4><p>Annual budget: ₹8.61 – detailed breakup available in Finance section</p></div></div>
+      <div class="rti-point"><div class="rti-num">8</div><div class="rti-text"><h4>Subsidy Programs</h4><p>PMAY, MGNREGA, Ramai Awas – beneficiary lists displayed on GP notice board</p></div></div>
+      <div class="rti-point"><div class="rti-num">9</div><div class="rti-text"><h4>Concessions & Permits</h4><p>Building permissions, trade licenses – issued under Maharashtra GP Act</p></div></div>
+      <div class="rti-point"><div class="rti-num">10</div><div class="rti-text"><h4>Information Available with GP</h4><p>Revenue records, property registers, meeting minutes, audit reports</p></div></div>
+      <div class="rti-point"><div class="rti-num">11</div><div class="rti-text"><h4>Public Information Officer (PIO)</h4><p>Shri. Mohan K. Rahulwad · Gram Sevak · 8605462368 · gp181630@gmail.com</p></div></div>
+      <div class="rti-point"><div class="rti-num">12</div><div class="rti-text"><h4>First Appellate Authority</h4><p>Block Development Officer (BDO), Loha Taluka </p></div></div>
+      <div class="rti-point"><div class="rti-num">13</div><div class="rti-text"><h4>RTI Application Process</h4><p>Submit written application + ₹10 fee at GP office · Response within 30 days</p></div></div>
+    </div>
+  </div>
+
+  <!-- NOTICES -->
+  <div id="notices" class="section">
+    <div class="section-header"><h2>Notices & Announcements</h2><div class="marathi">सूचना व जाहिराती</div></div>
+    <div class="card">
+      <h3>Recent Notices · अलीकडील सूचना</h3>
+      <!-- <div class="notice-item">
+        <div class="notice-date">25 Apr 2026</div>
+        <div class="notice-body"><h4>Gram Sabha – Special Session <span class="badge badge-red">Urgent</span></h4><p>Agenda: JJM water connection review + PMAY pending cases · 15 May 2026 · 10 AM</p></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-date">18 Apr 2026</div>
+        <div class="notice-body"><h4>E-Tender Notice – Road Widening Ward 3 <span class="badge badge-blue">Tender</span></h4><p>EMD ₹24,000 · Last date: 10 May 2026 · Estimated cost ₹12,00,000</p></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-date">10 Apr 2026</div>
+        <div class="notice-body"><h4>Property Tax Payment Deadline <span class="badge badge-amber">Notice</span></h4><p>Last date for penalty-free payment: 30 April 2026 · Pay at GP office or online</p></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-date">01 Apr 2026</div>
+        <div class="notice-body"><h4>Majhi Ladki Bahin – Applications Open <span class="badge badge-green">Scheme</span></h4><p>Eligible women may apply at GP office · Documents required: Aadhar + bank passbook</p></div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-date">15 Mar 2026</div>
+        <div class="notice-body"><h4>Gram Sabha Minutes – February 2026 <span class="badge badge-blue">Minutes</span></h4><p>Resolutions adopted: 8 · Available for inspection at GP office</p></div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div id="gallery" class="section">
+    <div class="section-header"><h2>Gallery & Activities</h2><div class="marathi">छायाचित्रे व उपक्रम</div></div>
+    <div class="card">
+      <h3>Development Activities · विकास कामे   /   Community Events · सामाजिक उपक्रम</h3>
+      <div class="gallery-grid" style="margin-bottom:12px;">
+        <!-- <div class="gallery-thumb blue-bg">🏗️</div> -->
+         <!-- <div class="gallery-thumb">
+  <img src="images/3.jpeg" alt="Road Construction">
+</div> -->
+<div class="gallery-thumb">
+  <img src="images/2.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/3.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/4.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/5.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/6.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/7.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/8.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/9.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/10.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/11.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/12.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+<div class="gallery-thumb">
+  <img src="images/1.jpeg" alt="Road"
+       style="width:100%; height:250px; object-fit:contain;">
+</div>
+
+        <!-- <div class="gallery-thumb green-bg">🌳</div>
+        <div class="gallery-thumb amber-bg">💡</div>
+        <div class="gallery-thumb green-bg">🚰</div>
+        <div class="gallery-thumb blue-bg">🏫</div>
+        <div class="gallery-thumb amber-bg">🛣️</div>
+      </div> -->
+      <!-- <p style="font-size:12px; color:var(--muted); text-align:center;">Road construction · Tree plantation · LED street lights · Water supply · School · Roads</p>
+    </div> -->
+    <!-- <div class="card">
+      <h3>Community Events · सामाजिक उपक्रम</h3>
+      <div class="gallery-grid">
+        <div class="gallery-thumb blue-bg">🏆</div>
+        <div class="gallery-thumb green-bg">🎭</div>
+        <div class="gallery-thumb amber-bg">👩‍⚕️</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); text-align:center; margin-top:8px;">Sports day · Cultural program · Health camp</p>
+    </div> -->
+  </div>
+
+  <!-- CONTACT -->
+  <div id="contact" class="section">
+    <div class="section-header"><h2>Contact & Feedback</h2><div class="marathi">संपर्क व अभिप्राय</div></div>
+    <div class="card">
+      <h3>Contact Information · संपर्क माहिती</h3>
+      <div class="info-row"><span class="info-label">GP Office</span><span class="info-val">Sunegaon, Nanded – 431708</span></div>
+      <div class="info-row"><span class="info-label">Phone</span><span class="info-val">020-26123400</span></div>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-val">gp181630@gmail.com</span></div>
+      <div class="info-row"><span class="info-label">Helpline</span><span class="info-val">8605462368</span></div>
+      <div class="info-row"><span class="info-label">PIO</span><span class="info-val">Shri. Rohidas Tembhurne · 9970118935</span></div>
+    </div>
+    <div class="card">
+      <h3>Submit Grievance / Feedback · तक्रार / अभिप्राय</h3>
+      <div class="contact-form">
+        <input type="text" placeholder="Full Name · पूर्ण नाव" />
+        <input type="text" placeholder="Mobile Number · मोबाईल नंबर" />
+        <select>
+          <option>Select Category · प्रकार निवडा</option>
+          <option>Grievance · तक्रार</option>
+          <option>Certificate Request · प्रमाणपत्र</option>
+          <option>Scheme Inquiry · योजना चौकशी</option>
+          <option>Works Complaint · कामाची तक्रार</option>
+          <option>Feedback · अभिप्राय</option>
+          <option>RTI Application · माहिती अधिकार</option>
+        </select>
+        <textarea placeholder="Describe your issue or feedback · आपली तक्रार किंवा अभिप्राय लिहा"></textarea>
+        <button class="submit-btn">Submit · सादर करा</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = {home:0,about:1,services:2,schemes:3,works:4,finance:5,rti:6,notices:7,gallery:8,contact:9};
+  if (map[id] !== undefined) btns[map[id]].classList.add('active');
+}
+document.querySelector('.submit-btn').addEventListener('click', function() {
+  alert('तक्रार नोंदवली गेली / Grievance submitted successfully!\nReference No: GP-2026-' + Math.floor(Math.random()*9000+1000));
+});
+</script>
